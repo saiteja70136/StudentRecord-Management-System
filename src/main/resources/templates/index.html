@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head><title>Student List</title></head>
+<body>
+    <h2>All Students</h2>
+    <button style="background-color:green;height:50px;border-radius:10px;border:none;width:100px;color:white;font-weight:bold;" class="addstudentBtn">Add Student</button>
+    <button style="background-color:red;height:50px;border-radius:10px;border:none;width:100px;color:white;font-weight:bold;" class="logout">Logout</button>
+    <table border="1" id="students-table" cellpadding="7" cellspacing="0" width="50%" style="text-align:center;margin-top:10px;"></table>
+    <script>
+        document.querySelector('.logout').addEventListener('click',()=>{
+        	    dologout();
+        });
+        document.querySelector('.addstudentBtn').addEventListener('click',()=>{
+        	    window.location.href='/addstudent';
+        });
+        fetch('/getallstudents')
+        .then(res => res.json())
+        .then(data => {
+            let table = `<tr><th>ID</th><th>Name</th><th>Age</th><th>Email</th><th colspan=2>Actions</th></tr>`;
+            data.forEach(stu => {
+                table += 
+                	`<tr>
+                    <td>${stu.id}</td>
+                    <td>${stu.name}</td>
+                    <td>${stu.age}</td>
+                    <td>${stu.email}</td>
+                    <td>
+                   		<button style="font-weight:bold; background-color:green;border:none;width:100px;height:50px;border-radius:10px;color:white;" onclick="updateStudent(${stu.id})">Update</button>
+                    </td>
+                    <td>
+                        <button style="font-weight:bold; background-color:red;border:none;width:100px;height:50px;border-radius:10px;color:white;" onclick="deleteStudent(${stu.id})">Delete</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById("students-table").innerHTML = table;
+        });
+	    function updateStudent(id) {
+	    	    window.location.href="/updateform/"+id;
+	    }
+	    function deleteStudent(id) {
+	        fetch('/deletee/'+id, {
+	            method: 'DELETE'
+	        }).then(() => location.reload());
+	    }
+	    function dologout(){
+            window.location.href="/logout";
+	    }
+    </script>
+</body>
+</html>

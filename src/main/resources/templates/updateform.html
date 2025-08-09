@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+    <h2>Update Student data</h2>
+    <p class="iddata">Enter New Data Of ID:</p>
+    <form id="student-form">
+        Name: <input type="text" id="name"><br>
+        Age: <input type="number" id="age"><br>
+        Email: <input type="email" id="email"><br>
+        <button type="submit">Save</button>
+    </form>
+
+    <script>
+        let val = path = window.location.pathname;
+        let id = path.split("/").pop();
+        document.querySelector('.iddata').innerHTML+=`<b style="color:red"> ${id}</b>`;
+        document.getElementById("student-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const student = {
+                name: document.getElementById("name").value,
+                age: document.getElementById("age").value,
+                email: document.getElementById("email").value
+            };
+            update(student);
+        });
+        async function update(student) {
+            try {
+                const response = await fetch("/update/"+id, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(student)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+                if(result===1)
+                	   alert("Email exsisted In Database!!")
+                window.location.href = "/indexs";
+            } catch (error) {
+                console.error("Error adding student:", error);
+            }
+        }
+    </script>
+</body>
+</html>
